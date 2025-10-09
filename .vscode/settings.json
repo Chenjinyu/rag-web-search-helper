@@ -1,0 +1,12 @@
+{
+    "python.analysis.extraPaths": [
+        ".venv/lib/python3.11/site-packages"
+    ],
+    // Use Black for formatting
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "black-formatter.args": ["--line-length", "80"],
+    // Format files automatically on save
+    "editor.formatOnSave": true,
+    // --- isort configuration --- the isort deos. not work with below config
+    "isort.args": ["--profile", "black"]
+}

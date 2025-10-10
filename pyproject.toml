@@ -20,6 +20,7 @@ dependencies = [
     "openai>=2.2.0",
     "pylink>=0.3.3",
     "python-dotenv>=1.1.1",
+    "rich>=14.1.0",
     "streamlit>=1.50.0",
     "streamlit-chat>=0.1.1",
     "tiktoken>=0.12.0",

@@ -39,15 +39,15 @@ embeddings = OpenAIEmbeddings(
     retry_max_seconds=60,
 )
 
-# vector_store = Chroma(
-#     persist_directory="chroma_bd", embedding_function=embeddings
-# )
-
-vector_store = PineconeVectorStore(
-    index_name=os.getenv("PINECONE_DB_INDEX_NAME"),
-    embedding=embeddings,
-    namespace="rag-web-search-helper",
+vector_store = Chroma(
+    persist_directory="chroma_bd", embedding_function=embeddings
 )
+
+# vector_store = PineconeVectorStore(
+#     index_name=os.getenv("PINECONE_DB_INDEX_NAME"),
+#     embedding=embeddings,
+#     namespace="rag-web-search-helper",
+# )
 
 # tavily_extract = TavilyExtract()
 # tavily_map = TavilyMap(
@@ -80,6 +80,11 @@ async def index_documents_async(
     # Process all batches concurrently
     async def add_batch(batch: List[Document], batch_num: int) -> bool:
         try:
+            # TODO: the Pinecone Vector Store session will be closed in one of concurrent tasks.
+            # The PineconeVectorStore client (and underlying Pinecone SDK session) is not concurrency-safe
+            # — it uses an internal HTTP session that is closed when any task finishe.
+            # FIX: initial each vector store instance in each task
+            # or most reliable fix is to index batches sequentially instead of concurrently.
             await vector_store.aadd_documents(batch)
             log_success(
                 f"Batch {batch_num + 1}/{len(batches)} indexed successfully."
